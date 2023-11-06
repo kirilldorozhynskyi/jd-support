@@ -1,0 +1,10 @@
+{
+  "name": "jdev/jd-support",
+  "type": "wordpress-plugin",
+  "require": {
+    "php": "^7.2.5 || ^8.0",
+    "composer/installers": "^1.12.0 || ^2.0"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
