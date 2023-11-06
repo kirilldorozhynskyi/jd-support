@@ -1,5 +1,5 @@
 {
-  "name": "jdev/jd-support",
+  "name": "justdev/jd-support",
   "type": "wordpress-plugin",
   "require": {
     "php": "^7.2.5 || ^8.0",
