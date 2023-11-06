@@ -7,7 +7,7 @@
  * that starts the plugin.
  *
  * @link              justdev.org
- * @since             0.0.1
+ * @since             0.0.2
  * @package           jd_support
  *
  * @wordpress-plugin
