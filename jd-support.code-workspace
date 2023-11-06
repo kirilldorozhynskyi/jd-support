@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "psi-header.changes-tracking": {
+      "isActive": false
+    }
+  }
+}
