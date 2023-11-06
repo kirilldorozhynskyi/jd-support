@@ -7,7 +7,7 @@
  * that starts the plugin.
  *
  * @link              justdev.org
- * @since             0.0.2
+ * @since             0.0.3
  * @package           jd_support
  *
  * @wordpress-plugin
@@ -119,6 +119,7 @@ add_action("admin_init", function () {
         '%1$s Search engine indexing has been discouraged because the current environment is %2$s.',
         "roots"
       ),
+      "<strong>justDev:</strong>",
       "<code>" . WP_ENV . "</code>"
     );
     echo "<div class='notice notice-warning'><p>{$message}</p></div>";
