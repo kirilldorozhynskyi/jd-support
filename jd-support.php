@@ -14,7 +14,7 @@
  * Plugin Name:       justDev Support
  * Plugin URI:        justdev.org
  * Description:       Plugin for dev tools.
- * Version: 1.0.0
+ * Version:           1.1.1
  * Author:            Kyrylo Dorozhynskyi | justDev
  * Author URI:        justdev.org
  * License:           GPL-2.0+
