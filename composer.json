@@ -7,7 +7,7 @@
       "homepage": "https://github.com/kirilldorozhynskyi"
     }
   ],
-  "type": "wordpress-plugin",
+  "type": "wordpress-muplugin",
   "license": "MIT",
   "require": {
     "php": "^7.2.5 || ^8.0",
