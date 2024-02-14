@@ -5,6 +5,7 @@
     }
   ],
   "settings": {
+    "liveSassCompile.settings.generateMap": false,
     "psi-header.changes-tracking": {
       "isActive": false
     }
