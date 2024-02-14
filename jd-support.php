@@ -14,7 +14,7 @@
  * Plugin Name:       justDev Support
  * Plugin URI:        justdev.org
  * Description:       Plugin for dev tools.
- * Version:           1.1.3
+ * Version:           1.1.4
  * Author:            Kyrylo Dorozhynskyi | justDev
  * Author URI:        justdev.org
  * License:           GPL-2.0+
@@ -25,25 +25,25 @@
 
 function hide_update_notice()
 {
-  if (!current_user_can("update_core")) {
-    remove_action("admin_notices", "update_nag", 3);
-  }
+	if (!current_user_can('update_core')) {
+		remove_action('admin_notices', 'update_nag', 3);
+	}
 }
-add_action("admin_head", "hide_update_notice", 1);
+add_action('admin_head', 'hide_update_notice', 1);
 
-remove_action("wp_head", "adjacent_posts_rel_link_wp_head", 10, 0);
+remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
 
 function theme_remove_user_delete($actions)
 {
-  unset($actions["delete"]);
-  return $actions;
+	unset($actions['delete']);
+	return $actions;
 }
-add_filter("user_row_actions", "theme_remove_user_delete", 10, 1);
-add_filter("bulk_actions-users", "theme_remove_user_delete", 10, 1);
+add_filter('user_row_actions', 'theme_remove_user_delete', 10, 1);
+add_filter('bulk_actions-users', 'theme_remove_user_delete', 10, 1);
 
 // If this file is called directly, abort.
-if (!defined("WPINC")) {
-  die();
+if (!defined('WPINC')) {
+	die();
 }
 
 /**
@@ -51,7 +51,7 @@ if (!defined("WPINC")) {
  * Start at version 0.0.1 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define("PLUGIN_NAME_VERSION", "1.1.3");
+define('PLUGIN_NAME_VERSION', '1.1.34');
 
 /**
  * The code that runs during plugin activation.
@@ -59,9 +59,8 @@ define("PLUGIN_NAME_VERSION", "1.1.3");
  */
 function activate_jd_support()
 {
-  require_once plugin_dir_path(__FILE__) .
-    "includes/class-jd_support-activator.php";
-  Jd_support_Activator::activate();
+	require_once plugin_dir_path(__FILE__) . 'includes/class-jd_support-activator.php';
+	Jd_support_Activator::activate();
 }
 
 /**
@@ -70,19 +69,18 @@ function activate_jd_support()
  */
 function deactivate_jd_support()
 {
-  require_once plugin_dir_path(__FILE__) .
-    "includes/class-jd_support-deactivator.php";
-  Jd_support_Deactivator::deactivate();
+	require_once plugin_dir_path(__FILE__) . 'includes/class-jd_support-deactivator.php';
+	Jd_support_Deactivator::deactivate();
 }
 
-register_activation_hook(__FILE__, "activate_jd_support");
-register_deactivation_hook(__FILE__, "deactivate_jd_support");
+register_activation_hook(__FILE__, 'activate_jd_support');
+register_deactivation_hook(__FILE__, 'deactivate_jd_support');
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path(__FILE__) . "includes/class-jd_support.php";
+require plugin_dir_path(__FILE__) . 'includes/class-jd_support.php';
 
 /**
  * Begins execution of the plugin.
@@ -95,33 +93,30 @@ require plugin_dir_path(__FILE__) . "includes/class-jd_support.php";
  */
 function run_jd_support()
 {
-  $plugin = new Jd_support();
-  $plugin->run();
+	$plugin = new Jd_support();
+	$plugin->run();
 }
 run_jd_support();
 
-remove_action("wp_head", "adjacent_posts_rel_link_wp_head", 10, 0);
+remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
 
-if (!defined("DISALLOW_INDEXING") || DISALLOW_INDEXING !== true) {
-  return;
+if (!defined('DISALLOW_INDEXING') || DISALLOW_INDEXING !== true) {
+	return;
 }
 
-add_action("pre_option_blog_public", "__return_zero");
+add_action('pre_option_blog_public', '__return_zero');
 
-add_action("admin_init", function () {
-  if (!apply_filters("roots/bedrock/disallow_indexing_admin_notice", true)) {
-    return;
-  }
+add_action('admin_init', function () {
+	if (!apply_filters('roots/bedrock/disallow_indexing_admin_notice', true)) {
+		return;
+	}
 
-  add_action("admin_notices", function () {
-    $message = sprintf(
-      __(
-        '%1$s Search engine indexing has been discouraged because the current environment is %2$s.',
-        "roots"
-      ),
-      "<strong>justDev:</strong>",
-      "<code>" . WP_ENV . "</code>"
-    );
-    echo "<div class='notice notice-warning'><p>{$message}</p></div>";
-  });
+	add_action('admin_notices', function () {
+		$message = sprintf(
+			__('%1$s Search engine indexing has been discouraged because the current environment is %2$s.', 'roots'),
+			'<strong>justDev:</strong>',
+			'<code>' . WP_ENV . '</code>',
+		);
+		echo "<div class='notice notice-warning'><p>{$message}</p></div>";
+	});
 });
