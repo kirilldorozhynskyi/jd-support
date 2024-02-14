@@ -14,7 +14,7 @@
  * Plugin Name:       justDev Support
  * Plugin URI:        justdev.org
  * Description:       Plugin for dev tools.
- * Version:           1.1.1
+ * Version:           1.1.3
  * Author:            Kyrylo Dorozhynskyi | justDev
  * Author URI:        justdev.org
  * License:           GPL-2.0+
@@ -51,7 +51,7 @@ if (!defined("WPINC")) {
  * Start at version 0.0.1 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define("PLUGIN_NAME_VERSION", "1.1.1");
+define("PLUGIN_NAME_VERSION", "1.1.3");
 
 /**
  * The code that runs during plugin activation.
