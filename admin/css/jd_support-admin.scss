@@ -1,14 +1,21 @@
-.acf-admin-notice {
-  display: none !important;
+.acf-admin-page .notice.notice-warning {
+	display: none !important;
 }
 
 .gforms_edit_form
-  div[style="margin:16px 0 16px 0; border-left:4px solid #AB0400; background-color:#FAFAFA; text-align:center; display:block!important; visibility: visible!important; min-width:880px; box-sizing: border-box;-webkit-box-shadow: 0px 4px 3px 0px rgba(0,0,0,0.05);-moz-box-shadow: 0px 4px 3px 0px rgba(0,0,0,0.05); box-shadow: 0px 4px 3px 0px rgba(0,0,0,0.05);"] {
-  display: none !important;
-  a,
-  img {
-    display: none !important;
-  }
+	div[style='margin:16px 0 16px 0; border-left:4px solid #AB0400; background-color:#FAFAFA; text-align:center; display:block!important; visibility: visible!important; min-width:880px; box-sizing: border-box;-webkit-box-shadow: 0px 4px 3px 0px rgba(0,0,0,0.05);-moz-box-shadow: 0px 4px 3px 0px rgba(0,0,0,0.05); box-shadow: 0px 4px 3px 0px rgba(0,0,0,0.05);'] {
+	display: none !important;
+	a,
+	img {
+		display: none !important;
+	}
+}
+#gravityforms-update {
+	box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+	height: 1px;
+	.notice-warning {
+		display: none !important;
+	}
 }
 
 // $primary: #23282d;
