@@ -97,18 +97,6 @@ function jd_options_page_output()
             </tr>
 
             <tr valign="top">
-                <th scope="row"><?php _e('Delete all HTML comments', 'jd_support'); ?></th>
-                <td>
-                    <select name="jd_remove_comm" value="<?php echo esc_attr(get_option('jd_remove_comm')); ?>">
-                        <option value="yes" <?php if (get_option('jd_remove_comm') == 'yes'): ?>selected<?php endif; ?>>
-                            <?php _e('Yes', 'jd_support'); ?></option>
-                        <option value="no" <?php if (get_option('jd_remove_comm') == 'no'): ?>selected<?php endif; ?>>
-                            <?php _e('No', 'jd_support'); ?></option>
-                    </select>
-                </td>
-            </tr>
-
-            <tr valign="top">
                 <th scope="row"><?php _e('Add jD logo', 'jd_support'); ?></th>
                 <td>
                     <select name="jd_add_logo" value="<?php echo esc_attr(get_option('jd_add_logo')); ?>">

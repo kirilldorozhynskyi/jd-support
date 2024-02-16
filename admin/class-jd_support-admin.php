@@ -72,16 +72,13 @@ class Jd_support_Admin
 		 * class.
 		 */
 
-		// Загружаем стили с использованием свойства $plugin_name
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/jd_support-admin.css', [], $this->version, 'all');
 
-		// Добавляем стиль в фильтр gform_noconflict_styles
 		add_filter('gform_noconflict_styles', [$this, 'register_style']);
 	}
 
 	public function register_style($styles)
 	{
-		// Регистрируем стиль с использованием свойства $plugin_name
 		$styles[] = $this->plugin_name;
 		return $styles;
 	}

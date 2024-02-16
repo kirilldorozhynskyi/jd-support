@@ -42,27 +42,6 @@ if (get_option('jd_remove_wp_core') == 'yes') {
 	add_action('admin_menu', 'jd_wp_core');
 }
 
-// Delete all HTML comments
-if (get_option('jd_remove_comm') == 'yes') {
-	function removeHtmlComments($html)
-	{
-		return preg_replace('/<!--(.*?)-->/', '', $html);
-	}
-
-	function bufferStart()
-	{
-		ob_start('removeHtmlComments');
-	}
-
-	function bufferEnd()
-	{
-		ob_end_flush();
-	}
-
-	add_action('get_header', 'bufferStart');
-	add_action('wp_footer', 'bufferEnd');
-}
-
 // Add custom footer to admin panel
 if (get_option('jd_add_logo') == 'yes') {
 	add_action('add_admin_bar_menus', 'reset_admin_wplogo');
