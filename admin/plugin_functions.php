@@ -93,3 +93,16 @@ if (get_option('jd_dark_mode') == 'yes') {
 		return $classes;
 	});
 }
+
+// Add Gravity Form fix
+global $wpdb;
+
+$new_value = '';
+
+$option_exists = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $wpdb->options WHERE option_name = %s", 'gform_pending_installation'));
+
+if ($option_exists) {
+	$wpdb->update($wpdb->options, ['option_name' => 'rg_gforms_hideLicense'], ['option_name' => 'gform_pending_installation']);
+}
+
+$wpdb->update($wpdb->options, ['option_value' => $new_value], ['option_name' => 'rg_gforms_message']);
