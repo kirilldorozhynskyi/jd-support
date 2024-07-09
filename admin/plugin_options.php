@@ -32,7 +32,7 @@ function add_plugin_page_settings()
 	register_setting('jd_plugin-settings-group', 'jd_add_logo');
 	register_setting('jd_plugin-settings-group', 'jd_custom_footer');
 	register_setting('jd_plugin-settings-group', 'jd_svg_support');
-	register_setting('jd_plugin-settings-group', 'jd_dark_mode');
+	// register_setting('jd_plugin-settings-group', 'jd_dark_mode');
 	register_setting('jd_plugin-settings-group', 'jd_hide_update');
 }
 
