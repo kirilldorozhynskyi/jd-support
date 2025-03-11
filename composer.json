@@ -1,18 +1,18 @@
 {
-  "name": "justdev/jd-support",
-  "authors": [
-    {
-      "name": "Kirill Dorozhynskyi",
-      "email": "kyrylo.dorozhynskyi@justdev.org",
-      "homepage": "https://github.com/kirilldorozhynskyi"
-    }
-  ],
-  "type": "wordpress-muplugin",
-  "license": "MIT",
-  "require": {
-    "php": "^7.2.5 || ^8.0",
-    "composer/installers": "^1.12.0 || ^2.0"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+	"name": "justdev/jd-support",
+	"authors": [
+		{
+			"name": "Kirill Dorozhynskyi",
+			"email": "kyrylo.dorozhynskyi@justdev.org",
+			"homepage": "https://github.com/kirilldorozhynskyi"
+		}
+	],
+	"type": "wordpress-muplugin",
+	"license": "MIT",
+	"require": {
+		"php": "^7.2.5 || ^8.0",
+		"composer/installers": "^1.12.0 || ^2.0"
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }
