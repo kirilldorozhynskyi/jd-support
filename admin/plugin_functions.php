@@ -94,6 +94,134 @@ if (get_option('jd_dark_mode') == 'yes') {
 	});
 }
 
+
+
+function update_htaccess_cache_rules() {
+    $htaccess_file = ABSPATH . '.htaccess';
+    $cache_enabled = get_option('jd_cache') === 'yes';
+
+    // Start and end of cache section for safe deletion and update
+    $start_marker = '# BEGIN JDEV CACHE';
+    $end_marker = '# END JDEV CACHE';
+
+    // Removing old directives from .htaccess
+    $htaccess = file_exists($htaccess_file) ? file_get_contents($htaccess_file) : '';
+    $htaccess = preg_replace("/$start_marker(.*?)$end_marker/s", '', $htaccess);
+
+    if ($cache_enabled) {
+        $cache_rules = <<<HTACCESS
+{$start_marker}
+
+# Cache-Control for better performance and cache invalidation
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresDefault "access plus 1 month"
+
+    # HTML (refresh on every load)
+    ExpiresByType text/html "access plus 0 seconds"
+
+    # JSON, XML, RSS — update every 1 hour
+    ExpiresByType text/xml "access plus 1 hour"
+    ExpiresByType application/xml "access plus 1 hour"
+    ExpiresByType application/json "access plus 1 hour"
+    ExpiresByType application/rss+xml "access plus 1 hour"
+    ExpiresByType application/atom+xml "access plus 1 hour"
+
+    # Media: 4 months cash
+    ExpiresByType image/gif "access plus 4 months"
+    ExpiresByType image/png "access plus 4 months"
+    ExpiresByType image/jpeg "access plus 4 months"
+    ExpiresByType image/webp "access plus 4 months"
+    ExpiresByType image/svg+xml "access plus 4 months"
+    ExpiresByType video/mp4 "access plus 4 months"
+    ExpiresByType audio/ogg "access plus 4 months"
+    ExpiresByType video/ogg "access plus 4 months"
+    ExpiresByType video/webm "access plus 4 months"
+
+    # Fonts: 1 year cache
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+
+    # CSS и JS: 1 year cache
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Public cache with revalidation
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "public, max-age=0, must-revalidate"
+    </FilesMatch>
+
+    # Cache for static files (immutable)
+    <FilesMatch "\.(css|js|gif|jpe?g|png|webp|svg|woff|woff2|ttf|otf|eot|mp4|webm|avi|mov|flv|ico|json|xml)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+# Gzip compression
+<IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+
+    <IfModule mod_setenvif.c>
+        <IfModule mod_headers.c>
+            SetEnvIfNoCase ^(Accept-Encoding|X-cept-Encoding|X{15}|~{15}|-{15})$ ^(gzip|deflate)$ HAVE_Accept-Encoding
+            RequestHeader append Accept-Encoding "gzip,deflate" env=HAVE_Accept-Encoding
+
+            # Don’t compress images and other uncompressible content
+            SetEnvIfNoCase Request_URI \
+            \.(?:gif|jpe?g|png|rar|zip|exe|flv|mov|wma|mp3|avi|swf|mp?g|mp4|webm|webp|pdf)$ no-gzip dont-vary
+        </IfModule>
+    </IfModule>
+
+    # Compress all text-based files
+    <IfModule mod_filter.c>
+        AddOutputFilterByType DEFLATE application/atom+xml \
+                                      application/javascript \
+                                      application/json \
+                                      application/rss+xml \
+                                      application/vnd.ms-fontobject \
+                                      application/xhtml+xml \
+                                      application/xml \
+                                      font/ttf \
+                                      font/otf \
+                                      font/woff \
+                                      font/woff2 \
+                                      image/svg+xml \
+                                      image/x-icon \
+                                      text/css \
+                                      text/html \
+                                      text/plain \
+                                      text/x-component \
+                                      text/javascript \
+                                      text/xml
+    </IfModule>
+
+    <IfModule mod_headers.c>
+        Header append Vary: Accept-Encoding
+    </IfModule>
+</IfModule>
+
+{$end_marker}
+HTACCESS;
+
+        // Add new cache rules to the end of .htaccess
+        $htaccess .= PHP_EOL . $cache_rules;
+    }
+
+    // Write the updated .htaccess
+    file_put_contents($htaccess_file, $htaccess);
+}
+
+// Update .htaccess when option changes
+add_action('update_option_jd_cache', 'update_htaccess_cache_rules');
+add_action('admin_init', 'update_htaccess_cache_rules');
+
+
 // Add Gravity Form fix
 global $wpdb;
 
