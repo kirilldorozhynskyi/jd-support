@@ -6,7 +6,6 @@ use JdSupport\Core\Container\Container;
 use JdSupport\Core\Hooks\HookManager;
 use JdSupport\Core\Config\ConfigManager;
 use JdSupport\Admin\AdminManager;
-use JdSupport\Public\PublicManager;
 
 /**
  * Main Plugin Class
@@ -18,7 +17,7 @@ class Plugin
 	/**
 	 * Plugin version
 	 */
-	const VERSION = '1.1.8';
+	const VERSION = '2.0.0';
 
 	/**
 	 * Plugin name
@@ -44,11 +43,6 @@ class Plugin
 	 * @var AdminManager
 	 */
 	private $adminManager;
-
-	/**
-	 * @var PublicManager
-	 */
-	private $publicManager;
 
 	/**
 	 * Plugin constructor
@@ -79,7 +73,6 @@ class Plugin
 		$this->configManager = new ConfigManager($this->container);
 		$this->hookManager = new HookManager($this->container);
 		$this->adminManager = new AdminManager($this->container);
-		$this->publicManager = new PublicManager($this->container);
 	}
 
 	/**
@@ -89,7 +82,6 @@ class Plugin
 	{
 		$this->hookManager->registerCoreHooks();
 		$this->adminManager->registerHooks();
-		$this->publicManager->registerHooks();
 	}
 
 	/**
