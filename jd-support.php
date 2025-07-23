@@ -1,20 +1,16 @@
 <?php
 /**
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
+ * justDev Support Plugin
  *
  * @link              justdev.org
- * @since             0.0.3
- * @package           jd_support
+ * @since             1.1.8
+ * @package           JdSupport
  *
  * @wordpress-plugin
  * Plugin Name:       justDev Support
  * Plugin URI:        justdev.org
- * Description:       Plugin for dev tools.
- * Version:           1.1.8
+ * Description:       Plugin for dev tools with modern architecture.
+ * Version:           2.0.0
  * Author:            Kyrylo Dorozhynskyi | justDev
  * Author URI:        justdev.org
  * License:           GPL-2.0+
@@ -23,100 +19,42 @@
  * Domain Path:       /languages
  */
 
-function hide_update_notice()
-{
-	if (!current_user_can('update_core')) {
-		remove_action('admin_notices', 'update_nag', 3);
-	}
-}
-add_action('admin_head', 'hide_update_notice', 1);
-
-remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
-
-function theme_remove_user_delete($actions)
-{
-	unset($actions['delete']);
-	return $actions;
-}
-add_filter('user_row_actions', 'theme_remove_user_delete', 10, 1);
-add_filter('bulk_actions-users', 'theme_remove_user_delete', 10, 1);
-
-// If this file is called directly, abort.
+// Prevent direct access
 if (!defined('WPINC')) {
 	die();
 }
 
-/**
- * Currently plugin version.
- * Start at version 0.0.1 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define('PLUGIN_NAME_VERSION', '1.1.6');
+// Define plugin constants
+define('JD_SUPPORT_VERSION', '2.0.0');
+define('JD_SUPPORT_PLUGIN_NAME', 'jd_support');
+define('JD_SUPPORT_PLUGIN_PATH', plugin_dir_path(__FILE__));
+define('JD_SUPPORT_PLUGIN_URL', plugin_dir_url(__FILE__));
 
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-jd_support-activator.php
- */
-function activate_jd_support()
-{
-	require_once plugin_dir_path(__FILE__) . 'includes/class-jd_support-activator.php';
-	Jd_support_Activator::activate();
-}
+// Simple autoloader
+spl_autoload_register(function ($class) {
+	// Convert namespace to file path
+	$prefix = 'JdSupport\\';
+	$base_dir = JD_SUPPORT_PLUGIN_PATH . 'src/';
 
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-jd_support-deactivator.php
- */
-function deactivate_jd_support()
-{
-	require_once plugin_dir_path(__FILE__) . 'includes/class-jd_support-deactivator.php';
-	Jd_support_Deactivator::deactivate();
-}
-
-register_activation_hook(__FILE__, 'activate_jd_support');
-register_deactivation_hook(__FILE__, 'deactivate_jd_support');
-
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path(__FILE__) . 'includes/class-jd_support.php';
-
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    0.0.1
- */
-function run_jd_support()
-{
-	$plugin = new Jd_support();
-	$plugin->run();
-}
-run_jd_support();
-
-remove_action('wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
-
-if (!defined('DISALLOW_INDEXING') || DISALLOW_INDEXING !== true) {
-	return;
-}
-
-add_action('pre_option_blog_public', '__return_zero');
-
-add_action('admin_init', function () {
-	if (!apply_filters('roots/bedrock/disallow_indexing_admin_notice', true)) {
+	$len = strlen($prefix);
+	if (strncmp($prefix, $class, $len) !== 0) {
 		return;
 	}
 
-	add_action('admin_notices', function () {
-		$message = sprintf(
-			__('%1$s Search engine indexing has been discouraged because the current environment is %2$s.', 'roots'),
-			'<strong>justDev:</strong>',
-			'<code>' . WP_ENV . '</code>',
-		);
-		echo "<div class='notice notice-warning'><p>{$message}</p></div>";
-	});
+	$relative_class = substr($class, $len);
+	$file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
+
+	if (file_exists($file)) {
+		require $file;
+	}
 });
+
+// Initialize plugin
+add_action('plugins_loaded', function () {
+	$plugin = new \JdSupport\Core\Plugin();
+	$plugin->run();
+});
+
+// Register activation/deactivation hooks
+register_activation_hook(__FILE__, [\JdSupport\Core\Activation\ActivationManager::class, 'activate']);
+register_deactivation_hook(__FILE__, [\JdSupport\Core\Activation\ActivationManager::class, 'deactivate']);
