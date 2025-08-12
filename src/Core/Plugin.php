@@ -17,12 +17,12 @@ class Plugin
 	/**
 	 * Plugin version
 	 */
-	const VERSION = '2.0.0';
+	const VERSION = JD_SUPPORT_VERSION;
 
 	/**
 	 * Plugin name
 	 */
-	const PLUGIN_NAME = 'jd_support';
+	const PLUGIN_NAME = JD_SUPPORT_PLUGIN_NAME;
 
 	/**
 	 * @var Container

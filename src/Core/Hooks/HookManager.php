@@ -55,11 +55,11 @@ class HookManager
 		// SVG support hooks
 		$this->addAction('upload_mimes', [$this->container->get('svg'), 'addSvgSupport'], 10);
 
-		// Dark mode hooks
-		$this->addFilter('admin_body_class', [$this->container->get('admin'), 'addDarkModeClass'], 10);
-
 		// Cache hooks
 		$this->addAction('init', [$this->container->get('cache'), 'updateHtaccessRules'], 10);
+
+		// Indexing disallow hooks
+		$this->addAction('admin_init', [$this->container->get('security'), 'setupIndexingDisallow'], 10);
 	}
 
 	/**

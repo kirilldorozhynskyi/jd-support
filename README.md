@@ -1,85 +1,85 @@
 # justDev Support Plugin - Modern Architecture
 
-## Обзор
+## Overview
 
-Этот плагин был полностью переработан с использованием современных принципов разработки и архитектурных паттернов.
+This plugin has been completely redesigned using modern development principles and architectural patterns.
 
-## Новая архитектура
+## New Architecture
 
-### Структура проекта
+### Project Structure
 
 ```
 src/
-├── Core/                    # Ядро плагина
-│   ├── Plugin.php          # Главный класс плагина
+├── Core/                    # Plugin core
+│   ├── Plugin.php          # Main plugin class
 │   ├── Container/          # Dependency Injection
 │   │   └── Container.php
-│   ├── Config/             # Управление конфигурацией
+│   ├── Config/             # Configuration management
 │   │   └── ConfigManager.php
-│   └── Hooks/              # Управление хуками
+│   └── Hooks/              # Hook management
 │       └── HookManager.php
-├── Services/               # Бизнес-логика
+├── Services/               # Business logic
 │   ├── SecurityService.php
 │   ├── AdminService.php
 │   ├── CacheService.php
 │   ├── SvgService.php
 │   └── VersionService.php
-├── Admin/                  # Административная часть
+├── Admin/                  # Administrative part
 │   ├── AdminManager.php
 │   └── Controllers/
 │       ├── SettingsController.php
 │       └── AssetsController.php
-├── Public/                 # Публичная часть
+├── Public/                 # Public part
 │   ├── PublicManager.php
 │   └── Controllers/
 │       └── AssetsController.php
-└── Views/                  # Представления
+└── Views/                  # Views
     └── settings-page.php
 ```
 
-### Ключевые улучшения
+### Key Improvements
 
 #### 1. Dependency Injection Container
-- Централизованное управление зависимостями
-- Автоматическое создание экземпляров сервисов
-- Легкое тестирование и расширяемость
+- Centralized dependency management
+- Automatic service instance creation
+- Easy testing and extensibility
 
 #### 2. Service Layer Pattern
-- Разделение бизнес-логики на отдельные сервисы
-- Каждый сервис отвечает за конкретную функциональность
-- Легкое переиспользование кода
+- Separation of business logic into separate services
+- Each service is responsible for specific functionality
+- Easy code reuse
 
 #### 3. MVC Architecture
-- Контроллеры для обработки запросов
-- Представления для отображения данных
-- Модели (сервисы) для бизнес-логики
+- Controllers for request handling
+- Views for data display
+- Models (services) for business logic
 
 #### 4. Configuration Management
-- Централизованное управление настройками
-- Типизированные методы для работы с конфигурацией
-- Автоматическая валидация настроек
+- Centralized settings management
+- Typed methods for configuration work
+- Automatic settings validation
 
 #### 5. Hook Management
-- Структурированное управление WordPress хуками
-- Автоматическая регистрация всех хуков
-- Легкое добавление новых хуков
+- Structured WordPress hook management
+- Automatic registration of all hooks
+- Easy addition of new hooks
 
-## Установка и использование
+## Installation and Usage
 
-### Требования
+### Requirements
 - PHP 7.4+
 - WordPress 5.0+
 
-### Установка
-1. Скопируйте файлы в директорию `wp-content/mu-plugins/`
-2. Активируйте плагин через админ-панель
-3. Настройте опции в разделе "j|D Support"
+### Installation
+1. Copy files to `wp-content/mu-plugins/` directory
+2. Activate plugin through admin panel
+3. Configure options in "j|D Support" section
 
-### Разработка
+### Development
 
-#### Добавление нового сервиса
+#### Adding a new service
 ```php
-// 1. Создайте сервис в src/Services/
+// 1. Create service in src/Services/
 class NewService
 {
     public function __construct(Container $container)
@@ -89,20 +89,20 @@ class NewService
     
     public function doSomething()
     {
-        // Ваша логика
+        // Your logic
     }
 }
 
-// 2. Зарегистрируйте в Container.php
+// 2. Register in Container.php
 $this->register('new', NewService::class);
 
-// 3. Используйте в HookManager.php
+// 3. Use in HookManager.php
 $this->addAction('hook_name', [$this->container->get('new'), 'doSomething']);
 ```
 
-#### Добавление нового контроллера
+#### Adding a new controller
 ```php
-// 1. Создайте контроллер в src/Admin/Controllers/
+// 1. Create controller in src/Admin/Controllers/
 class NewController
 {
     public function registerHooks()
@@ -111,65 +111,65 @@ class NewController
     }
 }
 
-// 2. Добавьте в AdminManager.php
+// 2. Add to AdminManager.php
 $this->newController = new NewController($this->container);
 $this->newController->registerHooks();
 ```
 
-## Тестирование
+## Testing
 
-### Запуск тестов
+### Running tests
 ```bash
 composer test
 ```
 
-### Проверка кода
+### Code checking
 ```bash
-composer phpcs    # Проверка стиля кода
-composer phpstan  # Статический анализ
-composer fix      # Автоисправление стиля
+composer phpcs    # Code style check
+composer phpstan  # Static analysis
+composer fix      # Auto-fix style
 ```
 
-## Миграция со старой версии
+## Migration from old version
 
-### Основные изменения
-1. **Файловая структура**: Полностью переработана
-2. **Namespace**: Используется PSR-4 автозагрузка
-3. **Dependency Injection**: Внедрен контейнер зависимостей
-4. **Service Layer**: Бизнес-логика разделена на сервисы
-5. **Configuration**: Централизованное управление настройками
+### Main changes
+1. **File structure**: Completely redesigned
+2. **Namespace**: PSR-4 autoloading used
+3. **Dependency Injection**: Dependency container implemented
+4. **Service Layer**: Business logic separated into services
+5. **Configuration**: Centralized settings management
 
-### Совместимость
-- Все существующие настройки сохраняются
-- API хуков остается совместимым
-- Функциональность не изменилась
+### Compatibility
+- All existing settings are preserved
+- Hook API remains compatible
+- Functionality unchanged
 
-## Преимущества новой архитектуры
+## Advantages of new architecture
 
-### 1. Поддерживаемость
-- Четкое разделение ответственности
-- Легкое понимание структуры кода
-- Простое добавление новых функций
+### 1. Maintainability
+- Clear separation of responsibilities
+- Easy understanding of code structure
+- Simple addition of new features
 
-### 2. Тестируемость
-- Каждый компонент можно тестировать отдельно
-- Dependency Injection упрощает мокирование
-- Автоматизированные тесты
+### 2. Testability
+- Each component can be tested separately
+- Dependency Injection simplifies mocking
+- Automated tests
 
-### 3. Расширяемость
-- Легкое добавление новых сервисов
-- Модульная архитектура
-- Переиспользование компонентов
+### 3. Extensibility
+- Easy addition of new services
+- Modular architecture
+- Component reuse
 
-### 4. Производительность
-- Автозагрузка только нужных классов
-- Оптимизированный контейнер зависимостей
-- Кеширование конфигурации
+### 4. Performance
+- Loading only necessary classes
+- Optimized dependency container
+- Configuration caching
 
-## Лицензия
+## License
 
 GPL-2.0+
 
-## Автор
+## Author
 
 Kyrylo Dorozhynskyi | justDev 
