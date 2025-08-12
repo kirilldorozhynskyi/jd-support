@@ -31,7 +31,6 @@ class ActivationManager
 	public static function activate(): void
 	{
 		self::createDefaultOptions();
-		self::setupIndexingDisallow();
 	}
 
 	/**
@@ -52,31 +51,6 @@ class ActivationManager
 			if (get_option($option) === false) {
 				add_option($option, $value);
 			}
-		}
-	}
-
-	/**
-	 * Setup indexing disallow functionality
-	 */
-	private static function setupIndexingDisallow(): void
-	{
-		if (defined('DISALLOW_INDEXING') && DISALLOW_INDEXING === true) {
-			add_action('pre_option_blog_public', '__return_zero');
-
-			add_action('admin_init', function () {
-				if (!apply_filters('roots/bedrock/disallow_indexing_admin_notice', true)) {
-					return;
-				}
-
-				add_action('admin_notices', function () {
-					$message = sprintf(
-						__('%1$s Search engine indexing has been discouraged because the current environment is %2$s.', 'roots'),
-						'<strong>justDev:</strong>',
-						'<code>' . WP_ENV . '</code>',
-					);
-					echo "<div class='notice notice-warning'><p>{$message}</p></div>";
-				});
-			});
 		}
 	}
 

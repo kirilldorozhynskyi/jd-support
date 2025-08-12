@@ -74,17 +74,4 @@ class AdminService
 
 		return 'Developed by <a href="https://justdev.org" target="_blank">justDev</a>.';
 	}
-
-	/**
-	 * Add dark mode class
-	 */
-	public function addDarkModeClass($classes): string
-	{
-		if (!$this->config->isEnabled('dark_mode')) {
-			return $classes;
-		}
-
-		$classes .= ' dark-mode';
-		return $classes;
-	}
 }

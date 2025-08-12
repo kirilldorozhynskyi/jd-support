@@ -2,7 +2,7 @@
 	"name": "jd-support",
 	"version": "2.0.0",
 	"description": "justDev Support Plugin with modern architecture",
-	"main": "jd-support-new.php",
+	"main": "jd-support.php",
 	"scripts": {
 		"dev": "composer install && npm install",
 		"build": "composer install --no-dev && npm run build",
@@ -16,7 +16,13 @@
 		"type": "git",
 		"url": "git+https://github.com/kirilldorozhynskyi/jd-support.git"
 	},
-	"keywords": ["wordpress", "plugin", "development", "tools", "support"],
+	"keywords": [
+		"wordpress",
+		"plugin",
+		"development",
+		"tools",
+		"support"
+	],
 	"author": "Kyrylo Dorozhynskyi | justDev",
 	"license": "GPL-2.0+",
 	"bugs": {

@@ -72,4 +72,29 @@ class SecurityService
 			defined('DISALLOW_FILE_EDIT') || define('DISALLOW_FILE_EDIT', true);
 		}
 	}
+
+	/**
+	 * Setup indexing disallow functionality
+	 */
+	public function setupIndexingDisallow(): void
+	{
+		if (!defined('DISALLOW_INDEXING') || DISALLOW_INDEXING !== true) {
+			return;
+		}
+
+		add_action('pre_option_blog_public', '__return_zero');
+
+		add_action('admin_notices', function () {
+			if (!apply_filters('roots/bedrock/disallow_indexing_admin_notice', true)) {
+				return;
+			}
+
+			$message = sprintf(
+				__('%1$s Search engine indexing has been discouraged because the current environment is %2$s.', 'roots'),
+				'<strong>justDev:</strong>',
+				'<code>' . WP_ENV . '</code>',
+			);
+			echo "<div class='notice notice-warning'><p>{$message}</p></div>";
+		});
+	}
 }
