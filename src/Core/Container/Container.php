@@ -7,6 +7,7 @@ use JdSupport\Services\AdminService;
 use JdSupport\Services\CacheService;
 use JdSupport\Services\SvgService;
 use JdSupport\Services\VersionService;
+use JdSupport\Services\GravityFormsService;
 use JdSupport\Core\Config\ConfigManager;
 
 /**
@@ -37,6 +38,7 @@ class Container
 		$this->register('cache', CacheService::class);
 		$this->register('svg', SvgService::class);
 		$this->register('version', VersionService::class);
+		$this->register('gravityforms', GravityFormsService::class);
 	}
 
 	/**
