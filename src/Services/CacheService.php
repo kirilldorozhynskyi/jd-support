@@ -66,18 +66,43 @@ class CacheService
 		return "# BEGIN Cache Rules
 <IfModule mod_expires.c>
     ExpiresActive On
+
+    # Cache images for 1 month
     ExpiresByType image/jpg \"access plus 1 month\"
     ExpiresByType image/jpeg \"access plus 1 month\"
     ExpiresByType image/gif \"access plus 1 month\"
     ExpiresByType image/png \"access plus 1 month\"
+
+    # Cache CSS for 1 month
     ExpiresByType text/css \"access plus 1 month\"
+
+    # Cache PDF for 1 month
     ExpiresByType application/pdf \"access plus 1 month\"
+
+    # Cache JavaScript for 1 month
     ExpiresByType text/javascript \"access plus 1 month\"
     ExpiresByType application/javascript \"access plus 1 month\"
     ExpiresByType application/x-javascript \"access plus 1 month\"
+
+    # Cache Flash for 1 month
     ExpiresByType application/x-shockwave-flash \"access plus 1 month\"
+
+    # Cache icons for 1 year
     ExpiresByType image/x-icon \"access plus 1 year\"
+
+    # Cache fonts for 1 year
+    ExpiresByType font/ttf \"access plus 1 year\"
+    ExpiresByType font/otf \"access plus 1 year\"
+    ExpiresByType font/woff \"access plus 1 year\"
+    ExpiresByType font/woff2 \"access plus 1 year\"
+    ExpiresByType application/vnd.ms-fontobject \"access plus 1 year\"
+
+    # Default cache time: 2 days
     ExpiresDefault \"access plus 2 days\"
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header merge Vary \"X-Inertia\"
 </IfModule>
 # END Cache Rules";
 	}

