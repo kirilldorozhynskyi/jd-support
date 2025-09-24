@@ -71,9 +71,20 @@ src/
 - WordPress 5.0+
 
 ### Installation
-1. Copy files to `wp-content/mu-plugins/` directory
-2. Activate plugin through admin panel
-3. Configure options in "j|D Support" section
+
+#### Via Composer (recommended)
+1. Add the repository (if private) and require the package:
+   ```bash
+   composer require justdev/jd-support:"^2.1"
+   ```
+2. Copy `stubs/jd-support-mu-loader.php` to `wp-content/mu-plugins/jd-support.php` (or symlink it) so WordPress loads the vendor package.
+3. Run `composer install` (or `composer update`) to ensure the package lives in `vendor/justdev/jd-support`.
+4. Configure options in the "j|D Support" section of the admin area.
+
+#### Manual (legacy)
+1. Copy this repository into `wp-content/mu-plugins/jd-support/`.
+2. Ensure `jd-support.php` is present directly in that folder.
+3. Configure options in the "j|D Support" section.
 
 ### Development
 

