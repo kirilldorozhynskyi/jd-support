@@ -10,7 +10,7 @@
  * Plugin Name:       justDev Support
  * Plugin URI:        justdev.org
  * Description:       Plugin for dev tools with modern architecture.
- * Version:           2.0.2
+ * Version:           2.1.0
  * Author:            Kyrylo Dorozhynskyi | justDev
  * Author URI:        justdev.org
  * License:           GPL-2.0+
@@ -25,7 +25,7 @@ if (!defined('WPINC')) {
 }
 
 // Define plugin constants
-define('JD_SUPPORT_VERSION', '2.0.2');
+define('JD_SUPPORT_VERSION', '2.1.0');
 define('JD_SUPPORT_PLUGIN_NAME', 'jd_support');
 define('JD_SUPPORT_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('JD_SUPPORT_PLUGIN_URL', plugin_dir_url(__FILE__));
