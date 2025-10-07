@@ -2,7 +2,7 @@
 	"name": "justdev/jd-support",
 	"version": "2.1.0",
 	"description": "justDev Support Plugin with modern architecture",
-	"type": "library",
+	"type": "wordpress-muplugin",
 	"license": "GPL-2.0+",
 	"authors": [
 		{
