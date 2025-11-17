@@ -1,6 +1,6 @@
 {
 	"name": "jd-support",
-	"version": "2.1.1",
+	"version": "2.1.2",
 	"description": "justDev Support Plugin with modern architecture",
 	"main": "jd-support.php",
 	"scripts": {
