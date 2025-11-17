@@ -64,7 +64,7 @@ class HookManager
 		$this->addAction('init', [$this->container->get('gravityforms'), 'fixGravityFormsOptions'], 10);
 
 		// Indexing disallow hooks
-		$this->addAction('admin_init', [$this->container->get('security'), 'setupIndexingDisallow'], 10);
+		$this->addAction('init', [$this->container->get('security'), 'setupIndexingDisallow'], 10);
 	}
 
 	/**
