@@ -39,4 +39,36 @@ class GravityFormsService
 			['option_name' => 'rg_gforms_message']
 		);
 	}
+
+	/**
+	 * Ensure Editors can view Gravity Forms entries (menu + entries list).
+	 *
+	 * This is intentionally narrow: it does not grant form editing permissions.
+	 */
+	public function ensureEditorCanViewEntries(): void
+	{
+		if (!function_exists('get_role')) {
+			return;
+		}
+
+		$role = get_role('editor');
+		if (!$role) {
+			return;
+		}
+
+		$caps = apply_filters('jd_support/gravityforms_editor_caps', [
+			'gravityforms_view_entries',
+		]);
+
+		if (!is_array($caps)) {
+			return;
+		}
+
+		foreach ($caps as $cap) {
+			if (!is_string($cap) || $cap === '') {
+				continue;
+			}
+			$role->add_cap($cap);
+		}
+	}
 }

@@ -62,6 +62,7 @@ class HookManager
 
 		// Gravity Forms fix hooks
 		$this->addAction('init', [$this->container->get('gravityforms'), 'fixGravityFormsOptions'], 10);
+		$this->addAction('init', [$this->container->get('gravityforms'), 'ensureEditorCanViewEntries'], 11);
 
 		// Indexing disallow hooks
 		$this->addAction('init', [$this->container->get('security'), 'setupIndexingDisallow'], 10);
