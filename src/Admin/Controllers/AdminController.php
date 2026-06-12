@@ -54,6 +54,7 @@ class AdminController
 		register_setting('jd_plugin-settings-group', 'jd_custom_footer');
 		register_setting('jd_plugin-settings-group', 'jd_svg_support');
 		register_setting('jd_plugin-settings-group', 'jd_cache');
+		register_setting('jd_plugin-settings-group', 'jd_content_lock');
 		register_setting('jd_plugin-settings-group', 'jd_dark_mode');
 		register_setting('jd_plugin-settings-group', 'jd_hide_update');
 	}
@@ -190,6 +191,21 @@ class AdminController
 					</tr>
 
 					<tr valign="top">
+						<th scope="row"><?php _e('Content Edit Lock', 'jd_support'); ?></th>
+						<td>
+							<select name="jd_content_lock" value="<?php echo esc_attr(get_option('jd_content_lock')); ?>">
+								<option value="no" <?php if (get_option('jd_content_lock') == 'no'): ?>selected<?php endif; ?>>
+									<?php _e('No', 'jd_support'); ?></option>
+								<option value="yes" <?php if (get_option('jd_content_lock') == 'yes'): ?>selected<?php endif; ?>>
+									<?php _e('Yes', 'jd_support'); ?></option>
+							</select>
+							<p class="description">
+								<?php _e('Blocks creating, editing, deleting, publishing, and uploading site content.', 'jd_support'); ?>
+							</p>
+						</td>
+					</tr>
+
+					<tr valign="top">
 						<th scope="row"><?php _e('Hide update notifications', 'jd_support'); ?></th>
 						<td>
 							<select name="jd_hide_update" value="<?php echo esc_attr(get_option('jd_hide_update')); ?>">
@@ -224,4 +240,4 @@ class AdminController
 		</div>
 		<?php
 	}
-} 
+}

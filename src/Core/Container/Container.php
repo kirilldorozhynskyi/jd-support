@@ -5,6 +5,7 @@ namespace JdSupport\Core\Container;
 use JdSupport\Services\SecurityService;
 use JdSupport\Services\AdminService;
 use JdSupport\Services\CacheService;
+use JdSupport\Services\ContentLockService;
 use JdSupport\Services\SvgService;
 use JdSupport\Services\VersionService;
 use JdSupport\Services\GravityFormsService;
@@ -36,6 +37,7 @@ class Container
 		$this->register('security', SecurityService::class);
 		$this->register('admin', AdminService::class);
 		$this->register('cache', CacheService::class);
+		$this->register('content_lock', ContentLockService::class);
 		$this->register('svg', SvgService::class);
 		$this->register('version', VersionService::class);
 		$this->register('gravityforms', GravityFormsService::class);

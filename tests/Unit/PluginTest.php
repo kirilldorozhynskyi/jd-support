@@ -18,7 +18,7 @@ class PluginTest extends WP_UnitTestCase
 		$plugin = new Plugin();
 
 		$this->assertInstanceOf(Plugin::class, $plugin);
-		$this->assertEquals('1.1.8', $plugin->getVersion());
+		$this->assertEquals(JD_SUPPORT_VERSION, $plugin->getVersion());
 		$this->assertEquals('jd_support', $plugin->getPluginName());
 	}
 
@@ -35,6 +35,7 @@ class PluginTest extends WP_UnitTestCase
 		$this->assertTrue($container->has('security'));
 		$this->assertTrue($container->has('admin'));
 		$this->assertTrue($container->has('cache'));
+		$this->assertTrue($container->has('content_lock'));
 		$this->assertTrue($container->has('svg'));
 		$this->assertTrue($container->has('version'));
 	}
