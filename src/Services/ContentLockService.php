@@ -23,11 +23,6 @@ class ContentLockService
 	private $config;
 
 	/**
-	 * @var array|null
-	 */
-	private $blockedPrimitiveCaps = null;
-
-	/**
 	 * Constructor
 	 */
 	public function __construct(Container $container)
@@ -37,106 +32,86 @@ class ContentLockService
 	}
 
 	/**
-	 * Deny direct post edit and delete permissions for locked post types.
+	 * Stop saves before WordPress writes post data.
 	 */
-	public function blockPostMetaCapabilities(array $caps, string $cap, int $userId, array $args): array
-	{
-		if (!$this->isLocked() || !in_array($cap, ['edit_post', 'delete_post'], true)) {
-			return $caps;
-		}
-
-		$postId = isset($args[0]) ? (int) $args[0] : 0;
-		if ($postId <= 0) {
-			return $caps;
-		}
-
-		$post = get_post($postId);
-		if (!$post || !$this->isLockedPostType($post->post_type)) {
-			return $caps;
-		}
-
-		return ['do_not_allow'];
-	}
-
-	/**
-	 * Deny post type primitive capabilities used by editors, publishers, and uploaders.
-	 */
-	public function blockContentCapabilities(array $allcaps, array $caps, array $args, $user): array
+	public function blockPostSaveData(array $data, array $postarr, array $unsanitizedPostarr = [], bool $update = false): array
 	{
 		if (!$this->isLocked()) {
-			return $allcaps;
+			return $data;
 		}
 
-		$requestedCap = isset($args[0]) && is_string($args[0]) ? $args[0] : '';
-		$capsToCheck = array_unique(array_filter(array_merge([$requestedCap], $caps)));
-
-		foreach ($capsToCheck as $cap) {
-			if (!is_string($cap) || !$this->isBlockedPrimitiveCap($cap)) {
-				continue;
-			}
-
-			$allcaps[$cap] = false;
-		}
-
-		return $allcaps;
-	}
-
-	/**
-	 * Remove edit actions from post list tables.
-	 */
-	public function removePostRowActions(array $actions, $post): array
-	{
-		if (!$this->isLocked() || !$post || !$this->isLockedPostType($post->post_type)) {
-			return $actions;
-		}
-
-		unset($actions['edit'], $actions['inline hide-if-no-js'], $actions['trash'], $actions['delete']);
-
-		return $actions;
-	}
-
-	/**
-	 * Remove content creation shortcuts from the admin bar.
-	 */
-	public function removeAdminBarContentActions($wpAdminBar): void
-	{
-		if (!$this->isLocked()) {
-			return;
-		}
-
-		$wpAdminBar->remove_node('new-content');
-	}
-
-	/**
-	 * Stop users who manually open post editing URLs.
-	 */
-	public function blockEditorScreens(): void
-	{
-		if (!$this->isLocked() || !is_admin()) {
-			return;
-		}
-
-		global $pagenow;
-
-		if ($pagenow !== 'post.php' && $pagenow !== 'post-new.php') {
-			return;
-		}
-
-		$postType = isset($_GET['post_type']) ? sanitize_key(wp_unslash($_GET['post_type'])) : 'post';
-		if (isset($_GET['post'])) {
-			$post = get_post((int) $_GET['post']);
-			$postType = $post ? $post->post_type : $postType;
+		$postType = isset($data['post_type']) ? (string) $data['post_type'] : '';
+		if ($postType === '' && isset($postarr['post_type'])) {
+			$postType = (string) $postarr['post_type'];
 		}
 
 		if (!$this->isLockedPostType($postType)) {
+			return $data;
+		}
+
+		if (!$update && isset($data['post_status']) && $data['post_status'] === 'auto-draft') {
+			return $data;
+		}
+
+		$this->denyContentChange();
+
+		return $data;
+	}
+
+	/**
+	 * Stop direct post updates before the database write.
+	 */
+	public function blockPostUpdate(int $postId, array $data): void
+	{
+		if (!$this->isLocked()) {
 			return;
 		}
 
-		wp_die(
-			esc_html__('Content editing is locked by justDev Support to prevent site changes.', 'jd_support'),
-			esc_html__('Content editing locked', 'jd_support'),
-			['response' => 403],
-		);
+		$postType = isset($data['post_type']) ? (string) $data['post_type'] : '';
+		if ($postType === '') {
+			$post = get_post($postId);
+			$postType = $post ? $post->post_type : '';
+		}
+
+		if ($this->isLockedPostType($postType)) {
+			$this->denyContentChange();
+		}
+	}
+
+	/**
+	 * Stop moving locked content to the trash.
+	 */
+	public function blockPostTrash($trash, \WP_Post $post, string $previousStatus = '')
+	{
+		if ($this->isLocked() && $this->isLockedPostType($post->post_type)) {
+			return false;
+		}
+
+		return $trash;
+	}
+
+	/**
+	 * Stop permanently deleting locked content.
+	 */
+	public function blockPostDelete($check, \WP_Post $post, bool $forceDelete)
+	{
+		if ($this->isLocked() && $this->isLockedPostType($post->post_type)) {
+			return false;
+		}
+
+		return $check;
+	}
+
+	/**
+	 * Stop media uploads while the lock is active.
+	 */
+	public function blockUpload(array $file): array
+	{
+		if ($this->isLocked()) {
+			$file['error'] = __('Content editing is locked by justDev Support. Uploads are disabled.', 'jd_support');
+		}
+
+		return $file;
 	}
 
 	/**
@@ -149,8 +124,102 @@ class ContentLockService
 		}
 
 		echo '<div class="notice notice-warning"><p>';
-		echo esc_html__('Content editing is locked by justDev Support. Disable the Content Edit Lock option to allow changes.', 'jd_support');
+		echo esc_html__('Content editing is locked by justDev Support. You can view content normally, but saving changes is disabled.', 'jd_support');
 		echo '</p></div>';
+	}
+
+	/**
+	 * Keep the editor visible while disabling save/update controls.
+	 */
+	public function renderEditorReadOnlyState(): void
+	{
+		if (!$this->isLocked() || !$this->isLockedEditorScreen()) {
+			return;
+		}
+
+		$message = __('Content editing is locked by justDev Support. You can view content normally, but saving changes is disabled.', 'jd_support');
+		$selector = implode(
+			',',
+			[
+				'#publish',
+				'#save-post',
+				'#delete-action a',
+				'.editor-post-publish-button',
+				'.editor-post-save-draft',
+				'.editor-post-trash',
+				'.editor-post-switch-to-draft',
+			],
+		);
+		?>
+		<style>
+			<?php echo esc_html($selector); ?> {
+				cursor: not-allowed !important;
+				opacity: 0.55 !important;
+			}
+		</style>
+		<script>
+			(function () {
+				var message = <?php echo wp_json_encode($message); ?>;
+				var selector = <?php echo wp_json_encode($selector); ?>;
+
+				function showNotice() {
+					try {
+						if (!window.wp || !wp.data || !wp.data.dispatch) {
+							return;
+						}
+
+						var notices = wp.data.dispatch('core/notices');
+						if (!notices || !notices.createWarningNotice) {
+							return;
+						}
+
+						notices.createWarningNotice(message, {
+							id: 'jd-support-content-lock',
+							isDismissible: false
+						});
+					} catch (error) {
+						return;
+					}
+				}
+
+				function disableControls() {
+					document.querySelectorAll(selector).forEach(function (button) {
+						button.setAttribute('aria-disabled', 'true');
+						button.setAttribute('title', message);
+						button.disabled = true;
+					});
+				}
+
+				document.addEventListener('submit', function (event) {
+					if (event.target && event.target.id === 'post') {
+						event.preventDefault();
+						window.alert(message);
+					}
+				}, true);
+
+				document.addEventListener('click', function (event) {
+					var target = event.target && event.target.closest ? event.target.closest(selector) : null;
+					if (!target) {
+						return;
+					}
+
+					event.preventDefault();
+					event.stopPropagation();
+					window.alert(message);
+				}, true);
+
+				disableControls();
+				showNotice();
+
+				if (window.MutationObserver) {
+					new MutationObserver(disableControls).observe(document.body, {
+						childList: true,
+						subtree: true
+					});
+				}
+			})();
+		</script>
+		<?php
 	}
 
 	/**
@@ -174,8 +243,8 @@ class ContentLockService
 
 		return new \WP_Error(
 			'jd_support_content_locked',
-			__('Content editing is locked by justDev Support to prevent site changes.', 'jd_support'),
-			['status' => 403],
+			__('Content editing is locked by justDev Support. Changes were not saved.', 'jd_support'),
+			['status' => 423],
 		);
 	}
 
@@ -218,55 +287,6 @@ class ContentLockService
 	}
 
 	/**
-	 * Check if a primitive capability should be denied while locked.
-	 */
-	private function isBlockedPrimitiveCap(string $cap): bool
-	{
-		if ($this->blockedPrimitiveCaps === null) {
-			$this->blockedPrimitiveCaps = $this->getBlockedPrimitiveCaps();
-		}
-
-		return in_array($cap, $this->blockedPrimitiveCaps, true);
-	}
-
-	/**
-	 * Collect editable capabilities from locked post types.
-	 */
-	private function getBlockedPrimitiveCaps(): array
-	{
-		$capNames = [
-			'create_posts',
-			'delete_others_posts',
-			'delete_posts',
-			'delete_private_posts',
-			'delete_published_posts',
-			'edit_others_posts',
-			'edit_posts',
-			'edit_private_posts',
-			'edit_published_posts',
-			'publish_posts',
-		];
-		$blockedCaps = [];
-
-		foreach ($this->getLockedPostTypes() as $postType) {
-			$postTypeObject = get_post_type_object($postType);
-			if (!$postTypeObject || !isset($postTypeObject->cap)) {
-				continue;
-			}
-
-			foreach ($capNames as $capName) {
-				if (!empty($postTypeObject->cap->{$capName})) {
-					$blockedCaps[] = $postTypeObject->cap->{$capName};
-				}
-			}
-		}
-
-		$blockedCaps[] = 'upload_files';
-
-		return array_values(array_unique((array) apply_filters('jd_support/content_lock_blocked_caps', $blockedCaps)));
-	}
-
-	/**
 	 * Determine if a REST route targets locked content.
 	 */
 	private function isLockedRestRoute(string $route): bool
@@ -283,5 +303,36 @@ class ContentLockService
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if the current admin screen is a locked post editor.
+	 */
+	private function isLockedEditorScreen(): bool
+	{
+		if (!is_admin() || !function_exists('get_current_screen')) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+		if (!$screen || !in_array($screen->base, ['post', 'post-new'], true)) {
+			return false;
+		}
+
+		$postType = isset($screen->post_type) ? (string) $screen->post_type : 'post';
+
+		return $this->isLockedPostType($postType);
+	}
+
+	/**
+	 * Stop the current request with a consistent lock message.
+	 */
+	private function denyContentChange(): void
+	{
+		wp_die(
+			esc_html__('Content editing is locked by justDev Support. Changes were not saved.', 'jd_support'),
+			esc_html__('Content editing locked', 'jd_support'),
+			['response' => 423],
+		);
 	}
 }

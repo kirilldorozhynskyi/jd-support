@@ -62,14 +62,13 @@ class HookManager
 		$this->addAction('init', [$this->container->get('cache'), 'updateHtaccessRules'], 10);
 
 		// Content lock hooks
-		$this->addFilter('map_meta_cap', [$this->container->get('content_lock'), 'blockPostMetaCapabilities'], 10, 4);
-		$this->addFilter('user_has_cap', [$this->container->get('content_lock'), 'blockContentCapabilities'], 10, 4);
-		$this->addFilter('post_row_actions', [$this->container->get('content_lock'), 'removePostRowActions'], 10, 2);
-		$this->addFilter('page_row_actions', [$this->container->get('content_lock'), 'removePostRowActions'], 10, 2);
-		$this->addFilter('media_row_actions', [$this->container->get('content_lock'), 'removePostRowActions'], 10, 2);
-		$this->addAction('admin_bar_menu', [$this->container->get('content_lock'), 'removeAdminBarContentActions'], 999);
-		$this->addAction('admin_init', [$this->container->get('content_lock'), 'blockEditorScreens'], 1);
+		$this->addFilter('wp_insert_post_data', [$this->container->get('content_lock'), 'blockPostSaveData'], 10, 4);
+		$this->addAction('pre_post_update', [$this->container->get('content_lock'), 'blockPostUpdate'], 10, 2);
+		$this->addFilter('pre_trash_post', [$this->container->get('content_lock'), 'blockPostTrash'], 10, 3);
+		$this->addFilter('pre_delete_post', [$this->container->get('content_lock'), 'blockPostDelete'], 10, 3);
+		$this->addFilter('wp_handle_upload_prefilter', [$this->container->get('content_lock'), 'blockUpload'], 10, 1);
 		$this->addAction('admin_notices', [$this->container->get('content_lock'), 'showAdminNotice'], 10);
+		$this->addAction('admin_footer', [$this->container->get('content_lock'), 'renderEditorReadOnlyState'], 20);
 		$this->addFilter('rest_pre_dispatch', [$this->container->get('content_lock'), 'blockRestContentMutations'], 10, 3);
 
 		// Gravity Forms fix hooks

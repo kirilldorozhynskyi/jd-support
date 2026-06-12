@@ -200,7 +200,7 @@ class AdminController
 									<?php _e('Yes', 'jd_support'); ?></option>
 							</select>
 							<p class="description">
-								<?php _e('Blocks creating, editing, deleting, publishing, and uploading site content.', 'jd_support'); ?>
+								<?php _e('Keeps content visible in the editor, but disables saving, deleting, publishing, and uploading changes.', 'jd_support'); ?>
 							</p>
 						</td>
 					</tr>
