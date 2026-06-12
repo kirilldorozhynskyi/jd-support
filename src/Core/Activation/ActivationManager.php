@@ -21,6 +21,7 @@ class ActivationManager
 		'jd_custom_footer' => 'yes',
 		'jd_svg_support' => 'yes',
 		'jd_cache' => 'no',
+		'jd_content_lock' => 'no',
 		'jd_dark_mode' => 'no',
 		'jd_hide_update' => 'no',
 	];

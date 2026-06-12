@@ -124,6 +124,23 @@ if (!defined('ABSPATH')) {
                 </tr>
 
                 <tr valign="top">
+                    <th scope="row"><?php _e('Content Edit Lock', 'jd_support'); ?></th>
+                    <td>
+                        <select name="jd_content_lock">
+                            <option value="no" <?php selected(get_option('jd_content_lock'), 'no'); ?>>
+                                <?php _e('No', 'jd_support'); ?>
+                            </option>
+                            <option value="yes" <?php selected(get_option('jd_content_lock'), 'yes'); ?>>
+                                <?php _e('Yes', 'jd_support'); ?>
+                            </option>
+                        </select>
+                        <p class="description">
+                            <?php _e('Blocks creating, editing, deleting, publishing, and uploading site content.', 'jd_support'); ?>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr valign="top">
                     <th scope="row"><?php _e('Dark Mode', 'jd_support'); ?></th>
                     <td>
                         <select name="jd_dark_mode">
