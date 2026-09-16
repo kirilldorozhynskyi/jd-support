@@ -1,6 +1,6 @@
 {
 	"name": "justdev/jd-support",
-	"version": "2.1.6",
+	"version": "2.2.0",
 	"description": "justDev Support Plugin with modern architecture",
 	"type": "wordpress-muplugin",
 	"license": "GPL-2.0+",

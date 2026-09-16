@@ -2,6 +2,10 @@
 
 ## Overview
 
+Version 2.2 adds the shared data-cache API and removes browser-cache rule generation.
+See [project cache migration guide](docs/cache-migration.md) for the bidirectional theme adapter,
+fallback without the plugin, automatic invalidation, and legacy .htaccess cleanup.
+
 This plugin has been completely redesigned using modern development principles and architectural patterns.
 
 ## New Architecture
@@ -75,7 +79,7 @@ src/
 #### Via Composer (recommended)
 1. Add the repository (if private) and require the package:
    ```bash
-   composer require justdev/jd-support:"^2.1"
+   composer require justdev/jd-support:"^2.2"
    ```
 2. Copy `stubs/jd-support-mu-loader.php` to `wp-content/mu-plugins/jd-support.php` (or symlink it) so WordPress loads the vendor package.
 3. Run `composer install` (or `composer update`) to ensure the package lives in `vendor/justdev/jd-support`.

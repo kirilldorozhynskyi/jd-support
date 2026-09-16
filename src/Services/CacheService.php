@@ -3,107 +3,72 @@
 namespace JdSupport\Services;
 
 use JdSupport\Core\Container\Container;
-use JdSupport\Core\Config\ConfigManager;
+use JdSupport\Cache;
 
-/**
- * Cache Service
- *
- * @package JdSupport\Services
- */
 class CacheService
 {
-	/**
-	 * @var Container
-	 */
-	private $container;
+	public function __construct(Container $container) {}
 
-	/**
-	 * @var ConfigManager
-	 */
-	private $config;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct(Container $container)
+	public function clearContentCache(): void
 	{
-		$this->container = $container;
-		$this->config = $container->get('config');
+		Cache::clear();
+	}
+
+	public function clearOptionCache(string $option): void
+	{
+		if (strpos($option, '_transient_') === 0 || strpos($option, '_site_transient_') === 0) {
+			return;
+		}
+		Cache::clear();
+	}
+
+	public static function stripLegacyHtaccessRules(string $content): string
+	{
+		return preg_replace('/^# BEGIN Cache Rules\r?\n.*?^# END Cache Rules[^\S\r\n]*(?:\r?\n|$)/ms', '', $content);
 	}
 
 	/**
-	 * Update .htaccess cache rules
+	 * Remove only the old generated block, once, after an administrator visits.
+	 * Existing backups are never overwritten. Failed cleanup remains retryable.
 	 */
-	public function updateHtaccessRules(): void
+	public function removeLegacyHtaccessRules(): void
 	{
-		if (!$this->config->isEnabled('cache')) {
+		if (!current_user_can('manage_options') || get_option('jd_support_htaccess_cache_removed_22')) {
 			return;
 		}
-
-		$htaccess_file = ABSPATH . '.htaccess';
-
-		if (!file_exists($htaccess_file)) {
-			return;
+		$file = ABSPATH . '.htaccess';
+		if (file_exists($file)) {
+			$content = @file_get_contents($file);
+			if ($content === false) {
+				$this->cleanupNotice();
+				return;
+			}
+			$cleaned = self::stripLegacyHtaccessRules($content);
+			if ($cleaned !== $content) {
+				// Store the backup in WP options, never as a publicly downloadable file.
+				$backup = 'jd_support_legacy_htaccess_backup_22';
+				if (get_option($backup, null) === null && !add_option($backup, $content, '', false)) {
+					$this->cleanupNotice();
+					return;
+				}
+				if (get_option($backup) !== $content || @file_put_contents($file, $cleaned, LOCK_EX) !== strlen($cleaned)) {
+					$this->cleanupNotice();
+					return;
+				}
+			}
 		}
-
-		$content = file_get_contents($htaccess_file);
-		$cache_rules = $this->getCacheRules();
-
-		// Remove existing cache rules
-		$content = preg_replace('/# BEGIN Cache Rules.*# END Cache Rules/s', '', $content);
-
-		// Add new cache rules
-		$content = $cache_rules . "\n\n" . $content;
-
-		file_put_contents($htaccess_file, $content);
+		update_option('jd_support_htaccess_cache_removed_22', 1, false);
 	}
 
-	/**
-	 * Get cache rules for .htaccess
-	 */
-	private function getCacheRules(): string
+	private function cleanupNotice(): void
 	{
-		return "# BEGIN Cache Rules
-<IfModule mod_expires.c>
-    ExpiresActive On
-
-    # Cache images for 1 month
-    ExpiresByType image/jpg \"access plus 1 month\"
-    ExpiresByType image/jpeg \"access plus 1 month\"
-    ExpiresByType image/gif \"access plus 1 month\"
-    ExpiresByType image/png \"access plus 1 month\"
-
-    # Cache CSS for 1 month
-    ExpiresByType text/css \"access plus 1 month\"
-
-    # Cache PDF for 1 month
-    ExpiresByType application/pdf \"access plus 1 month\"
-
-    # Cache JavaScript for 1 month
-    ExpiresByType text/javascript \"access plus 1 month\"
-    ExpiresByType application/javascript \"access plus 1 month\"
-    ExpiresByType application/x-javascript \"access plus 1 month\"
-
-    # Cache Flash for 1 month
-    ExpiresByType application/x-shockwave-flash \"access plus 1 month\"
-
-    # Cache icons for 1 year
-    ExpiresByType image/x-icon \"access plus 1 year\"
-
-    # Cache fonts for 1 year
-    ExpiresByType font/ttf \"access plus 1 year\"
-    ExpiresByType font/otf \"access plus 1 year\"
-    ExpiresByType font/woff \"access plus 1 year\"
-    ExpiresByType font/woff2 \"access plus 1 year\"
-    ExpiresByType application/vnd.ms-fontobject \"access plus 1 year\"
-
-    # Default cache time: 2 days
-    ExpiresDefault \"access plus 2 days\"
-</IfModule>
-
-<IfModule mod_headers.c>
-    Header merge Vary \"X-Inertia\"
-</IfModule>
-# END Cache Rules";
+		add_action('admin_notices', static function () {
+			echo '<div class="notice notice-warning"><p>' .
+				esc_html__(
+					'jD Support: remove the legacy BEGIN/END Cache Rules block from .htaccess manually. Check file permissions. The saved backup is in the jd_support_legacy_htaccess_backup_22 option. Other rules must be preserved.',
+					'jd_support',
+				) .
+				'</p></div>';
+		});
 	}
 }
