@@ -109,19 +109,6 @@ if (!defined('ABSPATH')) {
                     </td>
                 </tr>
 
-                <tr valign="top">
-                    <th scope="row"><?php _e('Cache Rules', 'jd_support'); ?></th>
-                    <td>
-                        <select name="jd_cache">
-                            <option value="yes" <?php selected(get_option('jd_cache'), 'yes'); ?>>
-                                <?php _e('Yes', 'jd_support'); ?>
-                            </option>
-                            <option value="no" <?php selected(get_option('jd_cache'), 'no'); ?>>
-                                <?php _e('No', 'jd_support'); ?>
-                            </option>
-                        </select>
-                    </td>
-                </tr>
 
                 <tr valign="top">
                     <th scope="row"><?php _e('Content Edit Lock', 'jd_support'); ?></th>
