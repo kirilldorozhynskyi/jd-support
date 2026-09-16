@@ -59,7 +59,15 @@ class HookManager
 		$this->addAction('upload_mimes', [$this->container->get('svg'), 'addSvgSupport'], 10);
 
 		// Cache hooks
-		$this->addAction('init', [$this->container->get('cache'), 'updateHtaccessRules'], 10);
+		$this->addAction('admin_init', [$this->container->get('cache'), 'removeLegacyHtaccessRules'], 10, 0);
+		foreach (['save_post', 'deleted_post', 'wp_update_nav_menu'] as $hook) {
+			$this->addAction($hook, [$this->container->get('cache'), 'clearContentCache'], 10, 0);
+		}
+		$this->addAction('acf/save_post', [$this->container->get('cache'), 'clearContentCache'], 20, 0);
+		foreach (['added_option', 'updated_option', 'deleted_option'] as $hook) {
+			$this->addAction($hook, [$this->container->get('cache'), 'clearOptionCache'], 10, 1);
+		}
+		$this->addAction('jd_support/cache/clear', [\JdSupport\Cache::class, 'clear'], 10, 1);
 
 		// Content lock hooks
 		$this->addFilter('wp_insert_post_data', [$this->container->get('content_lock'), 'blockPostSaveData'], 10, 4);

@@ -43,7 +43,6 @@ class ConfigManager
 			'add_logo' => get_option('jd_add_logo', 'yes'),
 			'custom_footer' => get_option('jd_custom_footer', 'yes'),
 			'svg_support' => get_option('jd_svg_support', 'yes'),
-			'cache' => get_option('jd_cache', 'no'),
 			'content_lock' => get_option('jd_content_lock', 'no'),
 			'dark_mode' => get_option('jd_dark_mode', 'no'),
 			'hide_update' => get_option('jd_hide_update', 'no'),

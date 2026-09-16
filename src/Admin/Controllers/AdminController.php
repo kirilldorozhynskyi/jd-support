@@ -53,7 +53,6 @@ class AdminController
 		register_setting('jd_plugin-settings-group', 'jd_add_logo');
 		register_setting('jd_plugin-settings-group', 'jd_custom_footer');
 		register_setting('jd_plugin-settings-group', 'jd_svg_support');
-		register_setting('jd_plugin-settings-group', 'jd_cache');
 		register_setting('jd_plugin-settings-group', 'jd_content_lock');
 		register_setting('jd_plugin-settings-group', 'jd_dark_mode');
 		register_setting('jd_plugin-settings-group', 'jd_hide_update');
@@ -178,17 +177,6 @@ class AdminController
 						</td>
 					</tr>
 
-					<tr valign="top">
-						<th scope="row"><?php _e('Cache', 'jd_support'); ?></th>
-						<td>
-							<select name="jd_cache" value="<?php echo esc_attr(get_option('jd_cache')); ?>">
-								<option value="no" <?php if (get_option('jd_cache') == 'no'): ?>selected<?php endif; ?>>
-									<?php _e('No', 'jd_support'); ?></option>
-								<option value="yes" <?php if (get_option('jd_cache') == 'yes'): ?>selected<?php endif; ?>>
-									<?php _e('Yes', 'jd_support'); ?></option>
-							</select>
-						</td>
-					</tr>
 
 					<tr valign="top">
 						<th scope="row"><?php _e('Content Edit Lock', 'jd_support'); ?></th>
